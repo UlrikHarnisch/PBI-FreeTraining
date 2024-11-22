@@ -1,0 +1,47 @@
+DIM_Date = 
+//************** Script entwickelt von RADACAD - Edition: Juli 2021 
+//************** Definiere die Variablen unten für deine benutzerdefinierte Datentabelle 
+var _fromYear=2018 // Startjahr der Datendimension. Daten beginnen am 1. Januar dieses Jahres
+var _toYear=2022   // Endjahr der Datendimension. Daten enden am 31. Dezember dieses Jahres
+var _startOfFiscalYear=1 // Monat, der den Beginn des Geschäftsjahres darstellt. Beispiel: Wenn der Beginn im Juli ist, beträgt der Wert 7
+//************** 
+var _today=TODAY()
+return
+ADDCOLUMNS(
+    CALENDAR(
+                DATE(_fromYear,1,1),
+                DATE(_toYear,12,31)
+),
+"Jahr", YEAR([Date]),
+"Jahresanfang", DATE(YEAR([Date]),1,1),
+"Jahresende", DATE(YEAR([Date]),12,31),
+"Monat", MONTH([Date]),
+"Monatsanfang", DATE(YEAR([Date]), MONTH([Date]), 1),
+"Monatsende", EOMONTH([Date],0),
+"Anzahl Tage im Monat", DATEDIFF(DATE(YEAR([Date]), MONTH([Date]), 1), EOMONTH([Date],0), DAY) + 1,
+"Jahr Monat Nummer", INT(FORMAT([Date],"YYYYMM")),
+"Jahr Monat Name", FORMAT([Date],"YYYY-MMM"),
+"Tag", DAY([Date]),
+"Tag Name", FORMAT([Date],"DDDD"),
+"Tag Name Kurz", FORMAT([Date],"DDD"),
+"Wochentag", WEEKDAY([Date]),
+"Tag des Jahres", DATEDIFF(DATE(YEAR([Date]), 1, 1), [Date], DAY) + 1,
+"Monat Name", FORMAT([Date],"MMMM"),
+"Monat Name Kurz", FORMAT([Date],"MMM"),
+"Quartal", QUARTER([Date]),
+"Quartal Name", "Q"&FORMAT([Date],"Q"),
+"Jahr Quartal Nummer", INT(FORMAT([Date],"YYYYQ")),
+"Jahr Quartal Name", FORMAT([Date],"YYYY") & " Q" & FORMAT([Date],"Q"),
+"Quartalsanfang", DATE(YEAR([Date]), (QUARTER([Date])*3)-2, 1),
+"Quartalsende", EOMONTH(DATE(YEAR([Date]), QUARTER([Date])*3, 1), 0),
+"Woche des Jahres", WEEKNUM([Date]),
+"Wochenanfang", [Date] - WEEKDAY([Date]) + 1,
+"Wochenende", [Date] + 7 - WEEKDAY([Date]),
+"Geschäftsjahr", if(_startOfFiscalYear=1, YEAR([Date]), YEAR([Date]) + QUOTIENT(MONTH([Date]) + (13-_startOfFiscalYear), 13)),
+"Geschäftsquartal", QUARTER(DATE(YEAR([Date]), MOD(MONTH([Date]) + (13-_startOfFiscalYear) -1, 12) +1, 1)),
+"Geschäftsmonat", MOD(MONTH([Date]) + (13-_startOfFiscalYear) -1, 12) +1,
+"Tagesdifferenz", DATEDIFF(_today, [Date], DAY),
+"Monatsdifferenz", DATEDIFF(_today, [Date], MONTH),
+"Quartalsdifferenz", DATEDIFF(_today, [Date], QUARTER),
+"Jahresdifferenz", DATEDIFF(_today, [Date], YEAR)
+)
